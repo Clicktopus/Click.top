@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClickTop — Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:linear-gradient(135deg,#0a0a1a,#12102e,#0d0b24);min-height:100vh;font-family:'Inter',sans-serif;color:#e2e8f0;overflow-x:hidden}
+.auth-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:1.5rem;padding:2.2rem;max-width:420px;width:100%;margin:auto;box-shadow:0 25px 60px rgba(0,0,0,0.5)}
+.input-field{width:100%;padding:13px 13px 13px 44px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-size:14px;font-family:'Inter',sans-serif;font-weight:500;outline:none;transition:all .3s}
+.input-field:focus{border-color:rgba(124,58,237,0.6);box-shadow:0 0 0 3px rgba(124,58,237,0.15);background:rgba(255,255,255,0.09)}
+.input-field::placeholder{color:rgba(255,255,255,0.3);font-weight:400}
+.btn-primary{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:0.3px}
+.btn-indigo{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 4px 15px rgba(124,58,237,0.3)}
+.btn-indigo:hover{background:linear-gradient(135deg,#8b5cf6,#7c3aed);transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,0.4)}
+.btn-emerald{background:linear-gradient(135deg,#059669,#047857);color:#fff;box-shadow:0 4px 15px rgba(5,150,105,0.3)}
+.btn-emerald:hover{background:linear-gradient(135deg,#10b981,#059669);transform:translateY(-2px);box-shadow:0 8px 30px rgba(5,150,105,0.4)}
+.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:24px}
+.logo-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#ec4899,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#fff;box-shadow:0 10px 40px rgba(124,58,237,0.5),0 0 0 4px rgba(124,58,237,0.15);position:relative;overflow:hidden}
+.logo-icon::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%);animation:logoShine 3s ease infinite}
+@keyframes logoShine{0%{transform:translateX(-100%) rotate(45deg)}100%{transform:translateX(100%) rotate(45deg)}}
+.logo-text{margin-top:10px;font-size:22px;font-weight:900;letter-spacing:-0.5px}
+.logo-text .dot{color:#ec4899}
+.sidebar{position:fixed;top:0;left:0;height:100%;width:270px;background:linear-gradient(180deg,rgba(15,12,35,0.98),rgba(10,8,25,0.99));backdrop-filter:blur(30px);border-right:1px solid rgba(255,255,255,0.06);z-index:100;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.sidebar.open{transform:translateX(0)}
+.sidebar-header{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.sidebar-logo{display:flex;align-items:center;gap:10px}
+.sidebar-logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;flex-shrink:0}
+.sidebar-logo-text{font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.3px}
+.sidebar-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:18px;padding:4px;transition:color .2s}
+.sidebar-close:hover{color:#fff}
+.nav-list{padding:16px 14px;display:flex;flex-direction:column;gap:4px;flex:1;overflow-y:auto}
+.nav-btn{width:100%;display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid transparent;background:transparent;color:rgba(255,255,255,0.5);font-size:13.5px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;border-radius:14px;transition:all .25s ease;text-align:left;position:relative;overflow:hidden;letter-spacing:0.2px}
+.nav-btn .nav-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .25s ease;flex-shrink:0;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.4)}
+.nav-btn .nav-label{flex:1;font-weight:600}
+.nav-btn .nav-arrow{font-size:10px;color:rgba(255,255,255,0.2);transition:all .25s}
+.nav-btn:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.06)}
+.nav-btn:hover .nav-icon{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+.nav-btn:hover .nav-arrow{color:rgba(255,255,255,0.4);transform:translateX(2px)}
+.nav-btn.active{background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(139,92,246,0.1));color:#fff;border-color:rgba(124,58,237,0.3);box-shadow:0 4px 20px rgba(124,58,237,0.15),inset 0 1px 0 rgba(255,255,255,0.06)}
+.nav-btn.active .nav-icon{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;box-shadow:0 4px 12px rgba(124,58,237,0.4)}
+.nav-btn.active .nav-arrow{color:rgba(167,139,250,0.6)}
+.nav-btn.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:24px;background:linear-gradient(180deg,#7c3aed,#ec4899);border-radius:0 4px 4px 0}
+.nav-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:12px 4px}
+.nav-section-title{font-size:10px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:2.5px;font-weight:700;padding:4px 16px 8px}
+.sidebar-footer{padding:14px;border-top:1px solid rgba(255,255,255,0.06)}
+.logout-btn{width:100%;padding:12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.12);border-radius:12px;color:rgba(239,68,68,0.7);font-weight:600;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.logout-btn:hover{background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.25)}
+.top-header{background:rgba(10,10,26,0.85);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.menu-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);width:40px;height:40px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s}
+.menu-btn:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.15)}
+.header-title{font-size:16px;font-weight:800;color:#fff;letter-spacing:-0.3px;margin-left:14px}
+.header-right{display:flex;align-items:center;gap:10px}
+.notif-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);width:40px;height:40px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;position:relative}
+.notif-btn:hover{background:rgba(255,255,255,0.1);color:#fff}
+.notif-badge{position:absolute;top:-3px;right:-3px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:9px;font-weight:800;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid #0a0a1a}
+.balance-chip{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(139,92,246,0.1));border:1px solid rgba(124,58,237,0.25);padding:8px 16px;border-radius:14px}
+.balance-chip i{color:#a78bfa;font-size:13px}
+.balance-chip span{font-weight:800;color:#fff;font-size:13px;letter-spacing:-0.2px}
+.scroll-bar{background:linear-gradient(90deg,#7c3aed,#ec4899,#f59e0b,#10b981,#7c3aed);background-size:400% 100%;animation:scrollBg 6s linear infinite;padding:9px 0;overflow:hidden}
+@keyframes scrollBg{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+.scroll-text{display:inline-block;white-space:nowrap;animation:scrollTxt 14s linear infinite;color:#fff;font-weight:700;font-size:12.5px;letter-spacing:0.3px}
+@keyframes scrollTxt{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+.glow-card{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(236,72,153,0.08));border:1px solid rgba(124,58,237,0.25);border-radius:1.25rem;padding:1.5rem;position:relative;overflow:hidden}
+.glow-card::before{content:'';position:absolute;inset:-2px;border-radius:1.25rem;background:conic-gradient(from 0deg,#7c3aed,#ec4899,#f59e0b,#10b981,#3b82f6,#7c3aed);z-index:-1;animation:glowSpin 8s linear infinite;opacity:.5;filter:blur(8px)}
+@keyframes glowSpin{to{transform:rotate(360deg)}}
+.balance-big{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#f59e0b,#ef4444,#ec4899,#8b5cf6,#3b82f6);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:balanceShift 5s ease infinite;letter-spacing:-1px}
+@keyframes balanceShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.stat-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.25rem;display:flex;align-items:center;gap:14px;transition:all .3s}
+.stat-card:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.1)}
+.stat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.stat-label{font-size:11px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+.stat-value{font-size:1.5rem;font-weight:900;color:#fff;margin-top:2px;letter-spacing:-0.5px}
+.table-wrap{overflow-x:auto;border-radius:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06)}
+.table-wrap table{width:100%;border-collapse:collapse;font-size:13px}
+.table-wrap th{background:rgba(124,58,237,0.08);padding:14px 18px;text-align:left;font-weight:700;color:rgba(255,255,255,0.5);font-size:10px;text-transform:uppercase;letter-spacing:1.5px}
+.table-wrap td{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.75);font-weight:500}
+.badge{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;letter-spacing:0.3px}
+.badge-pending{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.badge-active{background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.2)}
+.badge-completed{background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+.badge-rejected{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+.badge-approved{background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+.action-btn{padding:7px 14px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s;border:1px solid}
+.action-btn:hover{transform:translateY(-1px)}
+.action-approve{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25);color:#34d399}
+.action-reject{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.25);color:#f87171}
+.action-complete{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.25);color:#60a5fa}
+.action-edit{background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.25);color:#a78bfa}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal-box{background:linear-gradient(180deg,#15132e,#0f0d24);border:1px solid rgba(255,255,255,0.08);border-radius:1.25rem;width:100%;max-width:500px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;animation:modalIn .3s ease;box-shadow:0 25px 60px rgba(0,0,0,0.5)}
+@keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-header{padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-weight:800;color:#fff;font-size:16px;letter-spacing:-0.3px;display:flex;align-items:center;gap:10px}
+.modal-close{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);width:32px;height:32px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{color:#fff;background:rgba(255,255,255,0.1)}
+.modal-body{flex:1;overflow-y:auto;padding:16px}
+.modal-footer{padding:12px 22px;border-top:1px solid rgba(255,255,255,0.06);text-align:center}
+.modal-footer p{font-size:11px;color:rgba(255,255,255,0.25)}
+.notif-item{padding:14px 16px;border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;border:1px solid transparent}
+.notif-item:hover{background:rgba(255,255,255,0.04)}
+.notif-unread{border-left:3px solid #7c3aed;background:rgba(124,58,237,0.06)}
+.notif-read{background:rgba(255,255,255,0.02)}
+.cc-dropdown{position:absolute;top:100%;left:0;right:0;background:#15132e;border:1px solid rgba(255,255,255,0.1);border-radius:12px;max-height:200px;overflow-y:auto;z-index:20;display:none;margin-top:4px;box-shadow:0 15px 40px rgba(0,0,0,0.5)}
+.cc-dropdown.show{display:block}
+.cc-option{padding:10px 14px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.04);transition:background .15s;font-weight:500}
+.cc-option:hover{background:rgba(124,58,237,0.2)}
+.overlay-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:90;display:none}
+.overlay-bg.show{display:block}
+.empty-state{text-align:center;padding:3rem 1rem;color:rgba(255,255,255,0.2)}
+.empty-state i{font-size:2.5rem;margin-bottom:10px;display:block}
+.empty-state p{font-weight:500;font-size:14px}
+.info-box{padding:16px 20px;border-radius:14px;font-size:13px;font-weight:500;display:flex;align-items:flex-start;gap:10px;line-height:1.6}
+.info-box i{margin-top:3px;flex-shrink:0}
+.info-indigo{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.15);color:rgba(167,139,250,0.9)}
+.info-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);color:rgba(251,191,36,0.9)}
+.info-emerald{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);color:rgba(52,211,153,0.9)}
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);color:#fff;padding:13px 28px;border-radius:14px;font-weight:700;font-size:14px;z-index:999;transition:transform .35s cubic-bezier(.4,0,.2,1);box-shadow:0 10px 35px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(124,58,237,0.3);border-radius:3px}
+.pay-method-card{background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden;display:flex;align-items:center;gap:14px}
+.pay-method-card:hover{border-color:rgba(124,58,237,0.3);background:rgba(255,255,255,0.05);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.2)}
+.pay-method-card.selected{border-color:rgba(124,58,237,0.6);background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(139,92,246,0.06));box-shadow:0 4px 20px rgba(124,58,237,0.2)}
+.pay-method-card.selected::after{content:'';position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(124,58,237,0.4)}
+.pay-method-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.pay-method-info{flex:1}
+.pay-method-name{font-weight:800;color:#fff;font-size:15px}
+.pay-method-desc{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px}
+.pay-method-id{font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;font-weight:700;font-family:monospace;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+.check-icon{position:absolute;top:12px;right:12px;z-index:2;color:#fff;font-size:11px;width:22px;height:22px;display:none;align-items:center;justify-content:center}
+.pay-method-card.selected .check-icon{display:flex}
+.premium-input{width:100%;padding:16px 18px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;color:#fff;font-size:15px;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .3s}
+.premium-input:focus{border-color:rgba(124,58,237,0.5);box-shadow:0 0 0 4px rgba(124,58,237,0.1),0 4px 20px rgba(0,0,0,0.2);background:rgba(255,255,255,0.07)}
+.premium-input::placeholder{color:rgba(255,255,255,0.2);font-weight:400}
+.premium-input-label{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:8px;display:block}
+.deposit-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:28px;margin-bottom:20px}
+.deposit-section-title{font-size:11px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:2.5px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.deposit-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.06),transparent)}
+.amount-input-wrap{position:relative}
+.amount-prefix{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:900;color:rgba(124,58,237,0.6);pointer-events:none}
+.amount-input{padding-left:42px !important;font-size:24px !important;font-weight:900 !important}
+.amount-suffix{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:12px;color:rgba(255,255,255,0.25);font-weight:600;text-transform:uppercase;letter-spacing:1px;pointer-events:none}
+.quick-amount-btn{padding:10px 0;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(255,255,255,0.6);font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;text-align:center}
+.quick-amount-btn:hover{background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:#a78bfa;transform:translateY(-1px)}
+.quick-amount-btn.active{background:rgba(124,58,237,0.15);border-color:rgba(124,58,237,0.5);color:#c4b5fd}
+.account-search-results{position:absolute;top:100%;left:0;right:0;background:#15132e;border:1.5px solid rgba(124,58,237,0.3);border-radius:14px;margin-top:6px;max-height:180px;overflow-y:auto;z-index:30;display:none;box-shadow:0 15px 40px rgba(0,0,0,0.5)}
+.account-search-results.show{display:block}
+.account-search-item{padding:12px 18px;cursor:pointer;font-size:14px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.04);transition:all .15s;display:flex;align-items:center;gap:10px}
+.account-search-item:hover{background:rgba(124,58,237,0.15);color:#fff}
+.dep-history-wrap{border-radius:20px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);overflow:hidden}
+.dep-history-header{padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px}
+.dep-history-header h3{font-weight:800;color:#fff;font-size:15px;letter-spacing:-0.2px;display:flex;align-items:center;gap:10px}
+.dep-history-header h3 i{color:#a78bfa}
+.dep-warning-bar{padding:12px 22px;background:rgba(245,158,11,0.06);border-bottom:1px solid rgba(245,158,11,0.08);display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(251,191,36,0.8);font-weight:500}
+.dep-warning-bar i{color:#fbbf24;flex-shrink:0}
+.dep-table{width:100%;border-collapse:collapse;font-size:13px}
+.dep-table th{background:rgba(124,58,237,0.06);padding:13px 18px;text-align:left;font-weight:700;color:rgba(255,255,255,0.45);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.dep-table td{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.03);color:rgba(255,255,255,0.7);font-weight:500}
+.dep-table tr:last-child td{border-bottom:none}
+.dep-method-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-size:12px;font-weight:700}
+.dep-method-binance{background:rgba(243,186,47,0.1);color:#f3ba2f;border:1px solid rgba(243,186,47,0.15)}
+.dep-method-webmoney{background:rgba(0,168,225,0.1);color:#00a8e1;border:1px solid rgba(0,168,225,0.15)}
+.dep-method-payeer{background:rgba(50,168,82,0.1);color:#32a852;border:1px solid rgba(50,168,82,0.15)}
+.dep-trx-id{font-family:monospace;font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:0.5px}
+.dep-amount{font-weight:800;color:#fbbf24}
+.dep-status-pulse{display:inline-flex;align-items:center;gap:6px}
+.dep-status-pulse .pulse-dot{width:6px;height:6px;border-radius:50%;background:#fbbf24;animation:statusPulse 2s ease infinite}
+@keyframes statusPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(0.8)}}
+.pkg-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:400px){.pkg-grid{grid-template-columns:1fr 1fr}}
+.pkg-card{background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.07);border-radius:16px;padding:18px;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden}
+.pkg-card:hover{border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.2)}
+.pkg-card.selected{border-color:rgba(124,58,237,0.6);background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(139,92,246,0.06));box-shadow:0 4px 20px rgba(124,58,237,0.2)}
+.pkg-card.selected .pkg-check{opacity:1;transform:scale(1)}
+.pkg-check{position:absolute;top:12px;right:12px;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;opacity:0;transform:scale(0.5);transition:all .3s;box-shadow:0 2px 8px rgba(124,58,237,0.4)}
+.pkg-emoji{font-size:24px;margin-bottom:8px;display:block}
+.pkg-name{font-weight:800;color:#fff;font-size:14px;letter-spacing:-0.2px}
+.pkg-visitors{font-size:12px;color:rgba(255,255,255,0.4);margin-top:3px;font-weight:500}
+.pkg-price{margin-top:10px;font-weight:900;font-size:20px;color:#fbbf24;letter-spacing:-0.5px}
+.pkg-price span{font-size:13px;font-weight:600;color:rgba(251,191,36,0.6)}
+.pkg-tag{position:absolute;top:12px;left:12px;padding:3px 10px;border-radius:8px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.pkg-tag-popular{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
+.pkg-tag-best{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.pkg-tag-max{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.country-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:500px){.country-grid{grid-template-columns:repeat(3,1fr)}}
+.country-chip{display:flex;align-items:center;gap:8px;padding:12px 14px;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;transition:all .25s;user-select:none}
+.country-chip:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15)}
+.country-chip.selected{background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.5);box-shadow:0 2px 12px rgba(124,58,237,0.15)}
+.country-chip .c-flag{font-size:18px;flex-shrink:0}
+.country-chip .c-name{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);transition:color .2s}
+.country-chip.selected .c-name{color:#c4b5fd}
+.country-chip .c-check{margin-left:auto;font-size:11px;color:#7c3aed;opacity:0;transition:opacity .2s}
+.country-chip.selected .c-check{opacity:1}
+.country-counter{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);border-radius:10px;font-size:12px;color:#a78bfa;font-weight:700}
+.country-counter .c-count{color:#c4b5fd;font-weight:900;font-size:14px}
+@keyframes slideDown{from{opacity:0;max-height:0;transform:translateY(-10px)}to{opacity:1;max-height:600px;transform:translateY(0)}}
+.slide-down{animation:slideDown .4s ease forwards;overflow:hidden}
+@media(max-width:640px){.dep-table{font-size:11px}.dep-table th,.dep-table td{padding:10px 12px}.dep-trx-id{font-size:10px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}}
+</style>
+<link rel="me" href="https://www.blogger.com/profile/04092781563592804580" />
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authSection" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px">
+<div class="auth-card">
+<div class="logo-wrap"><div class="logo-icon">C</div><div class="logo-text"><span style="color:#fff">Click</span><span class="dot">.</span><span style="color:#fff">Top</span></div></div>
+<p id="authSubtitle" style="text-align:center;color:rgba(255,255,255,0.3);font-size:13px;margin-bottom:28px;font-weight:500">Sign in to manage your campaigns</p>
+<form id="loginForm" onsubmit="return handleLogin(event)">
+<div style="position:relative;margin-bottom:16px"><i class="fas fa-phone" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);font-size:14px"></i><input type="tel" id="loginPhone" class="input-field" placeholder="Phone with country code" required></div>
+<div style="position:relative;margin-bottom:22px"><i class="fas fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);font-size:14px"></i><input type="password" id="loginPass" class="input-field" placeholder="8-digit password" required></div>
+<button type="submit" class="btn-primary btn-indigo" style="margin-bottom:18px"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+<p style="text-align:center;font-size:13px;color:rgba(255,255,255,0.3);font-weight:500">No account? <a href="#" onclick="showSignup();return false" style="color:#a78bfa;font-weight:700;text-decoration:none">Sign Up</a></p>
+</form>
+<form id="signupForm" style="display:none" onsubmit="return handleSignup(event)">
+<div style="position:relative;margin-bottom:14px"><i class="fas fa-user" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);font-size:14px"></i><input type="text" id="signupName" class="input-field" placeholder="Username" required></div>
+<div style="display:flex;gap:8px;margin-bottom:14px;position:relative">
+<div style="position:relative;width:36%"><div style="display:flex;align-items:center;height:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden"><input type="text" id="ccInput" class="input-field" style="padding:13px 6px 13px 10px;font-size:12px;width:100%;border:none;background:transparent;font-weight:600" placeholder="+880" readonly><button type="button" onclick="toggleCC()" style="background:none;border:none;color:rgba(255,255,255,0.3);padding:0 10px;cursor:pointer"><i class="fas fa-chevron-down" style="font-size:9px"></i></button></div><div id="ccDropdown" class="cc-dropdown"><input type="text" id="ccSearch" oninput="filterCC()" placeholder="Search..." style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.04);border:none;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;font-size:12px;outline:none;font-family:'Inter',sans-serif"><div id="ccList"></div></div></div>
+<div style="flex:1;position:relative"><i class="fas fa-phone" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);font-size:14px"></i><input type="tel" id="signupPhone" class="input-field" placeholder="Phone number" required></div>
+</div>
+<div style="position:relative;margin-bottom:14px"><i class="fas fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);font-size:14px"></i><input type="password" id="signupPass" class="input-field" placeholder="8-digit password" required pattern="\d{8}" maxlength="8"></div>
+<div style="position:relative;margin-bottom:14px"><i class="fas fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);font-size:14px"></i><input type="password" id="signupConfirm" class="input-field" placeholder="Confirm password" required pattern="\d{8}" maxlength="8"></div>
+<button type="submit" class="btn-primary btn-emerald" style="margin-bottom:18px"><i class="fas fa-user-plus"></i> Create Account</button>
+<p style="text-align:center;font-size:13px;color:rgba(255,255,255,0.3);font-weight:500">Have account? <a href="#" onclick="showLogin();return false" style="color:#a78bfa;font-weight:700;text-decoration:none">Sign In</a></p>
+</form>
+</div>
+</div>
+
+<!-- MAIN -->
+<div id="mainPanel" style="display:none;min-height:100vh">
+<div id="sidebarOverlay" class="overlay-bg" onclick="closeSidebar()"></div>
+<aside id="sidebar" class="sidebar">
+<div class="sidebar-header">
+<div class="sidebar-logo" aria-label="ClickTop">
+  <div class="sidebar-logo-icon" style="width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:grid;place-items:center;box-shadow:0 8px 24px rgba(124,58,237,.28);position:relative;overflow:hidden">
+    <svg width="25" height="25" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 8.5h18v5H12.5V17H23v5H12.5v1.5H7v-15Z" fill="white"/><circle cx="25.5" cy="8.5" r="3" fill="white" opacity=".75"/></svg>
+  </div>
+  <span class="sidebar-logo-text" style="font-weight:900;letter-spacing:-.5px">Click<span style="color:#ec4899">Top</span></span>
+</div>
+<button class="sidebar-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button></div>
+<div class="nav-list">
+<button class="nav-btn active" onclick="switchView('dashboard',this)"><div class="nav-icon"><i class="fas fa-th-large"></i></div><span class="nav-label">Dashboard</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('deposit',this)"><div class="nav-icon"><i class="fas fa-wallet"></i></div><span class="nav-label">Deposit Money</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('newCampaign',this)"><div class="nav-icon"><i class="fas fa-bullhorn"></i></div><span class="nav-label">New Campaign</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('myCampaigns',this)"><div class="nav-icon"><i class="fas fa-history"></i></div><span class="nav-label">My Campaigns</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('workRules',this)"><div class="nav-icon"><i class="fas fa-book-open"></i></div><span class="nav-label">Work Rules</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('contact',this)"><div class="nav-icon"><i class="fas fa-headset"></i></div><span class="nav-label">Contact Support</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<div id="adminNav" style="display:none"><div class="nav-divider"></div><div class="nav-section-title">Admin Panel</div>
+<button class="nav-btn" onclick="switchView('adminDash',this)"><div class="nav-icon"><i class="fas fa-shield-halved"></i></div><span class="nav-label">Admin Dashboard</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('adminUsers',this)"><div class="nav-icon"><i class="fas fa-users-gear"></i></div><span class="nav-label">Manage Users</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+<button class="nav-btn" onclick="switchView('adminCampaigns',this)"><div class="nav-icon"><i class="fas fa-list-check"></i></div><span class="nav-label">Manage Campaigns</span><i class="fas fa-chevron-right nav-arrow"></i></button>
+</div>
+</div>
+<div class="sidebar-footer"><button class="logout-btn" onclick="handleLogout()"><i class="fas fa-arrow-right-from-bracket"></i> Logout</button></div>
+</aside>
+<div style="display:flex;flex-direction:column;min-height:100vh">
+<header class="top-header"><div style="display:flex;align-items:center"><button class="menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button><h2 id="pageTitle" class="header-title">Dashboard</h2></div><div class="header-right"><button class="notif-btn" onclick="openNotifModal()"><i class="fas fa-bell"></i><span id="notifBadge" class="notif-badge">0</span></button><div class="balance-chip"><i class="fas fa-wallet"></i><span>$<span id="navBalance">0.00</span></span></div></div></header>
+<div class="scroll-bar"><span id="scrollText" class="scroll-text">🌟 Welcome to Click.Top! 🌟 Start earning today! 🌟 Minimum deposit $1 🌟</span></div>
+<main style="flex:1;padding:20px;max-width:920px;margin:0 auto;width:100%">
+<!-- DASHBOARD -->
+<div id="view-dashboard" class="view-section">
+<div class="glow-card" style="margin-bottom:24px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px"><div><p style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:2.5px;font-weight:700">Welcome back</p><h2 id="dashName" style="font-size:1.8rem;font-weight:900;color:#fff;margin-top:6px;letter-spacing:-0.5px">User</h2><p style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:6px;font-weight:500"><i class="fas fa-phone-alt" style="margin-right:6px;font-size:11px;color:rgba(255,255,255,0.25)"></i><span id="dashPhone">N/A</span></p></div><div style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:20px 28px;min-width:170px;text-align:center"><p style="font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:2.5px;font-weight:700">Total Balance</p><div class="balance-big" style="margin-top:6px">$<span id="dashBalance">0.00</span></div></div></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+<div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#fbbf24"><i class="fas fa-clock"></i></div><div><p class="stat-label">Pending</p><h3 id="statPending" class="stat-value">0</h3></div></div>
+<div class="stat-card"><div class="stat-icon" style="background:rgba(59,130,246,0.1);color:#60a5fa"><i class="fas fa-rocket"></i></div><div><p class="stat-label">Active</p><h3 id="statActive" class="stat-value">0</h3></div></div>
+<div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#34d399"><i class="fas fa-circle-check"></i></div><div><p class="stat-label">Completed</p><h3 id="statCompleted" class="stat-value">0</h3></div></div>
+</div>
+</div>
+
+<!-- DEPOSIT -->
+<div id="view-deposit" class="view-section" style="display:none">
+<div style="max-width:540px;margin:0 auto">
+<div class="deposit-section">
+<div class="deposit-section-title"><i class="fas fa-credit-card" style="color:#a78bfa;font-size:12px"></i> Payment Method</div>
+<div style="display:flex;flex-direction:column;gap:12px" id="payMethodCards">
+<!-- পেমেন্ট মেথড কার্ডগুলো এখন Firebase থেকে ডাইনামিক্যালি লোড হবে -->
+</div>
+</div>
+<div class="deposit-section">
+<div class="deposit-section-title"><i class="fas fa-pen-to-square" style="color:#a78bfa;font-size:12px"></i> Details</div>
+<div style="margin-bottom:18px"><label class="premium-input-label">Sender Account Name</label><input type="text" id="depSenderName" class="premium-input" placeholder="Name on your payment account"><p style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:6px">Exact name on your payment account</p></div>
+<div style="margin-bottom:18px;position:relative"><label class="premium-input-label">Your Account Name</label><input type="text" id="depAccountSearch" class="premium-input" placeholder="Search your account..." oninput="searchAccount(this.value)" onfocus="searchAccount(this.value)"><div id="accountResults" class="account-search-results"></div></div>
+<div><label class="premium-input-label">Amount</label><div class="amount-input-wrap"><span class="amount-prefix">$</span><input type="number" id="depAmount" class="premium-input amount-input" placeholder="0.00" min="1" step="0.01" oninput="clearQuickAmount()"><span class="amount-suffix">USD</span></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px"><button class="quick-amount-btn" onclick="setQuickAmount(5)">$5</button><button class="quick-amount-btn" onclick="setQuickAmount(10)">$10</button><button class="quick-amount-btn" onclick="setQuickAmount(25)">$25</button><button class="quick-amount-btn" onclick="setQuickAmount(50)">$50</button><button class="quick-amount-btn" onclick="setQuickAmount(100)">$100</button><button class="quick-amount-btn" onclick="setQuickAmount(200)">$200</button><button class="quick-amount-btn" onclick="setQuickAmount(500)">$500</button><button class="quick-amount-btn" onclick="setQuickAmount(1000)">$1K</button></div></div>
+</div>
+<button class="btn-primary btn-indigo" onclick="submitDeposit()" style="border-radius:16px;padding:16px;font-size:16px;margin-bottom:20px"><i class="fas fa-paper-plane"></i> Submit Deposit</button>
+
+<!-- ===== DEPOSIT REQUEST HISTORY ===== -->
+<div class="dep-history-wrap">
+<div class="dep-history-header">
+<h3><i class="fas fa-clock-rotate-left"></i> Deposit Request History</h3>
+</div>
+<div class="dep-warning-bar">
+<i class="fas fa-exclamation-circle"></i>
+<span>Deposit approval may take 5 to 30 minutes. Please be patient.</span>
+</div>
+<div id="depHistoryBody">
+<table class="dep-table">
+<thead>
+<tr>
+<th>Method</th>
+<th>TrxID / OrderID</th>
+<th>Amount (USD)</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="depHistoryTable">
+</tbody>
+</table>
+<div id="depHistoryEmpty" class="empty-state">
+<i class="fas fa-receipt"></i>
+<p>No deposit requests logged yet.</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- NEW CAMPAIGN -->
+<div id="view-newCampaign" class="view-section" style="display:none">
+<div style="max-width:600px;margin:0 auto">
+<div class="deposit-section"><div class="deposit-section-title"><i class="fas fa-cube" style="color:#a78bfa;font-size:12px"></i> Select Package</div><div class="pkg-grid" id="pkgGrid"></div></div>
+<div class="deposit-section"><div class="deposit-section-title"><i class="fas fa-link" style="color:#a78bfa;font-size:12px"></i> Target Link</div><input type="url" id="campLink" class="premium-input" placeholder="https://example.com" style="font-family:monospace;letter-spacing:0.5px"></div>
+<div id="countrySection" class="deposit-section" style="display:none">
+<div class="deposit-section-title" style="margin-bottom:12px"><i class="fas fa-globe" style="color:#a78bfa;font-size:12px"></i> Targeted Countries <span id="countryLimitLabel" style="margin-left:auto;font-size:10px;color:#fbbf24;font-weight:700;letter-spacing:1px"></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><p style="font-size:12px;color:rgba(255,255,255,0.35);font-weight:500">Select your target countries</p><div class="country-counter"><i class="fas fa-globe-americas" style="font-size:11px"></i> Selected: <span class="c-count" id="countryCount">0</span></div></div>
+<div class="country-grid" id="countryGrid"></div>
+</div>
+<div id="reviewSection" class="deposit-section" style="display:none"><div class="deposit-section-title"><i class="fas fa-clipboard-check" style="color:#a78bfa;font-size:12px"></i> Review & Submit</div><div id="reviewContent" style="display:flex;flex-direction:column;gap:10px"></div></div>
+<button class="btn-primary btn-emerald" onclick="submitCampaign()" style="border-radius:16px;padding:16px;font-size:16px;margin-bottom:16px"><i class="fas fa-rocket"></i> Submit Campaign</button>
+<div class="info-box info-indigo"><i class="fas fa-info-circle"></i><span>Campaign approval: 24-72 hours. Ensure your site has proper ads.</span></div>
+</div>
+</div>
+
+<!-- MY CAMPAIGNS -->
+<div id="view-myCampaigns" class="view-section" style="display:none">
+<div class="info-box info-amber" style="margin-bottom:16px"><i class="fas fa-info-circle"></i><span>Approval: 24-72 hours.</span></div>
+<div class="table-wrap"><table><thead><tr><th>Link</th><th>Package</th><th>Countries</th><th>Date</th><th>Status</th></tr></thead><tbody id="myCampsTable"><tr><td colspan="5" class="empty-state"><i class="fas fa-folder-open"></i><p>No campaigns yet</p></td></tr></tbody></table></div>
+</div>
+
+<!-- WORK RULES -->
+<div id="view-workRules" class="view-section" style="display:none">
+<div style="max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+<div class="info-box info-indigo"><div><h4 style="font-weight:800;color:#c4b5fd;margin-bottom:10px;font-size:14px">📋 প্যাকেজ তথ্য:</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px" id="rulesPackageList"></ul></div></div>
+<div class="info-box info-amber"><div><h4 style="font-weight:800;color:#fde68a;margin-bottom:10px;font-size:14px">⏳ সময়:</h4><ul style="list-style:none;padding:0;font-size:13px" id="rulesTimeList"></ul></div></div>
+<div class="info-box info-emerald"><div><h4 style="font-weight:800;color:#6ee7b7;margin-bottom:10px;font-size:14px">💡 গুরুত্বপূর্ণ:</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px" id="rulesImportantList"></ul></div></div>
+</div>
+</div>
+
+<!-- CONTACT -->
+<div id="view-contact" class="view-section" style="display:none">
+<div style="max-width:400px;margin:0 auto;text-align:center">
+<div style="width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;color:#60a5fa;border:1px solid rgba(59,130,246,0.15)"><i class="fab fa-telegram"></i></div>
+<h3 style="font-weight:900;color:#fff;font-size:22px;margin-bottom:8px;letter-spacing:-0.5px">Telegram Support</h3>
+<p style="font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:24px;font-weight:500">Facing issues? Reach out via Telegram.</p>
+<a href="https://t.me/nahid63550" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:700;padding:14px 32px;border-radius:14px;text-decoration:none;font-size:15px;box-shadow:0 4px 20px rgba(37,99,235,0.3);transition:all .3s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><i class="fab fa-telegram" style="font-size:18px"></i> Chat on Telegram</a>
+</div>
+</div>
+
+<!-- ADMIN VIEWS -->
+<div id="view-adminDash" class="view-section" style="display:none"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px"><div class="stat-card" style="flex-direction:column;align-items:flex-start;gap:10px"><div class="stat-icon" style="background:rgba(124,58,237,0.1);color:#a78bfa"><i class="fas fa-users"></i></div><p class="stat-label">Total Users</p><h3 id="adminTotalUsers" class="stat-value">0</h3></div><div class="stat-card" style="flex-direction:column;align-items:flex-start;gap:10px"><div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#34d399"><i class="fas fa-dollar-sign"></i></div><p class="stat-label">Revenue</p><h3 id="adminRevenue" class="stat-value">$0.00</h3></div><div class="stat-card" style="flex-direction:column;align-items:flex-start;gap:10px"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#fbbf24"><i class="fas fa-hourglass-half"></i></div><p class="stat-label">Pending</p><h3 id="adminPending" class="stat-value">0</h3></div></div></div>
+<div id="view-adminUsers" class="view-section" style="display:none"><div class="table-wrap"><table><thead><tr><th>Username</th><th>Phone</th><th>Balance</th><th>Action</th></tr></thead><tbody id="adminUsersBody"><tr><td colspan="4" class="empty-state"><i class="fas fa-users"></i><p>No users</p></td></tr></tbody></table></div></div>
+<div id="view-adminCampaigns" class="view-section" style="display:none"><div class="table-wrap"><table><thead><tr><th>User</th><th>Link</th><th>Package</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminCampsBody"><tr><td colspan="5" class="empty-state"><i class="fas fa-list-check"></i><p>No campaigns</p></td></tr></tbody></table></div></div>
+</main>
+</div>
+</div>
+
+<!-- MODALS -->
+<div id="notifModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><div class="modal-title"><i class="fas fa-bell" style="color:#a78bfa"></i> Notifications</div><div style="display:flex;align-items:center;gap:8px"><button onclick="markAllRead()" style="font-size:11px;color:#a78bfa;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);padding:6px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Inter',sans-serif">Mark All Read</button><button class="modal-close" onclick="closeNotifModal()"><i class="fas fa-times"></i></button></div></div><div id="notifList" class="modal-body"><div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications</p></div></div><div class="modal-footer"><p>Click to mark as read</p></div></div></div>
+<div id="editModal" class="modal-overlay"><div class="modal-box" style="max-width:420px"><div class="modal-header"><div class="modal-title"><i class="fas fa-user-pen" style="color:#a78bfa"></i> Edit User</div><button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div><div style="padding:22px"><input type="hidden" id="editPhone"><div style="margin-bottom:14px"><label class="premium-input-label">Username</label><input type="text" id="editUsername" class="premium-input"></div><div style="margin-bottom:14px"><label class="premium-input-label">Balance ($)</label><input type="number" step="0.01" id="editBalance" class="premium-input"></div><div style="margin-bottom:22px"><label class="premium-input-label">Role</label><select id="editRole" class="premium-input" style="cursor:pointer;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg fill=\"rgba(255,255,255,0.3)\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\"/></svg>');background-repeat:no-repeat;background-position:right 14px center;background-size:16px"><option value="user" style="background:#15132e">User</option><option value="admin" style="background:#15132e">Admin</option></select></div><div style="display:flex;gap:10px"><button onclick="closeEditModal()" style="flex:1;padding:13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(255,255,255,0.6);font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Cancel</button><button onclick="saveEditUser()" class="btn-primary btn-indigo" style="flex:1"><i class="fas fa-check"></i> Save</button></div></div></div></div>
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+/* ============================================================
+   FIREBASE CONFIG & INIT
+   ============================================================ */
+var firebaseConfig={
+  apiKey:"AIzaSyBZRU73k7STPMRwY90w2WYoSMfyYx9SqiE",
+  authDomain:"click-top.firebaseapp.com",
+  databaseURL:"https://click-top-default-rtdb.firebaseio.com",
+  projectId:"click-top",
+  storageBucket:"click-top.firebasestorage.app",
+  messagingSenderId:"332468724292",
+  appId:"1:332468724292:web:9dadf53d386337e74b5211"
+};
+firebase.initializeApp(firebaseConfig);
+var db=firebase.database();
+
+/* ============================================================
+   GLOBAL STATE
+   ============================================================ */
+var currentUser=null;
+var currentUserPhone=null;
+var selectedPayMethod=null;
+var selectedPkg=null;
+var selectedCountries=[];
+var notificationsData={};
+var cachedPaymentMethods=null;
+
+/* ============================================================
+   DEFAULT PAYMENT METHODS (ফলব্যাক যদি Firebase এ কিছু না থাকে)
+   ============================================================ */
+var defaultPaymentMethods={
+  binance:{name:"Binance Pay",desc:"USDT (TRC20) • Instant",address:"180728766",logo:"https://cdn.simpleicons.org/binance/F3BA2F"},
+  webmoney:{name:"WebMoney",desc:"USD Wallet • 5-30 min",address:"WMZ-Z123456789",logo:"https://cdn.simpleicons.org/webmoney/00A8E1"},
+  payeer:{name:"Payeer",desc:"USD Wallet • 5-30 min",address:"P1234567890",logo:"https://cdn.simpleicons.org/payeer/32A852"}
+};
+
+/* ============================================================
+   UTILITY FUNCTIONS
+   ============================================================ */
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]})}
+function toast(m,ok){var t=document.getElementById('toast');t.textContent=m;t.style.background=ok!==false?'linear-gradient(135deg,#059669,#047857)':'linear-gradient(135deg,#dc2626,#b91c1c)';t.style.transform='translateX(-50%) translateY(0)';setTimeout(function(){t.style.transform='translateX(-50%) translateY(100px)'},2600)}
+function money(x){return '$'+Number(x||0).toFixed(2)}
+
+/* লোগো URL থেকে কালার এক্সট্র্যাক্ট করা */
+function getColorFromLogo(logo){
+  if(!logo)return{bg:'rgba(124,58,237,0.1)',color:'#a78bfa'};
+  var parts=logo.replace(/\/$/,'').split('/');
+  var hex=parts[parts.length-1];
+  if(/^[0-9A-Fa-f]{6}$/.test(hex)){
+    var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16);
+    return{bg:'rgba('+r+','+g+','+b+',0.12)',color:'#'+hex};
+  }
+  return{bg:'rgba(124,58,237,0.1)',color:'#a78bfa'};
+}
+
+/* ============================================================
+   ★★★ পেমেন্ট মেথড রিয়েল-টাইম সিঙ্ক ★★★
+   অ্যাডমিন প্যানেল থেকে পরিবর্তন করলে এখানে অটো আপডেট হবে
+   ============================================================ */
+function loadUserPaymentMethods(){
+  db.ref('settings/paymentMethods').on('value',function(snap){
+    var methods=snap.val()||defaultPaymentMethods;
+    cachedPaymentMethods=methods;
+    var container=document.getElementById('payMethodCards');
+    if(!container)return;
+
+    /* আগে যে মেথড সিলেক্ট করা ছিল সেটা মনে রাখা */
+    var prevSelected=container.querySelector('.pay-method-card.selected');
+    var prevId=prevSelected?prevSelected.getAttribute('data-method'):null;
+
+    var html='';
+    var keys=Object.keys(methods);
+    for(var i=0;i<keys.length;i++){
+      var id=keys[i];
+      var m=methods[id]||{};
+      var isSel=(id===prevSelected)?' selected':'';
+      var colors=getColorFromLogo(m.logo);
+      var logoHtml='';
+      if(m.logo){
+        logoHtml='<img src="'+esc(m.logo)+'" style="width:24px;height:24px;object-fit:contain" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'\'"><i class="fas fa-credit-card" style="display:none"></i>';
+      }else{
+        logoHtml='<i class="fas fa-credit-card"></i>';
+      }
+      html+='<div class="pay-method-card'+isSel+'" data-method="'+esc(id)+'" onclick="selectPayMethod(\''+esc(id).replace(/'/g,"\\'")+'\',this)">'+
+        '<div class="pay-method-icon" style="background:'+colors.bg+';color:'+colors.color+'">'+logoHtml+'</div>'+
+        '<div class="pay-method-info">'+
+        '<div class="pay-method-name">'+esc(m.name||id)+'</div>'+
+        '<div class="pay-method-desc">'+esc(m.desc||'')+'</div>'+
+        '<div class="pay-method-id"><i class="fas fa-copy" style="font-size:10px;opacity:.5;cursor:pointer" onclick="event.stopPropagation();navigator.clipboard.writeText(\''+esc(m.address||'').replace(/'/g,"\\'")+'\');toast(\'Copied!\')"></i> '+esc(m.address||'')+'</div>'+
+        '</div>'+
+        '<div class="check-icon"><i class="fas fa-check"></i></div>'+
+        '</div>';
+    }
+    container.innerHTML=html;
+
+    /* যদি আগে কোনোটা সিলেক্ট করা ছিল, সেটা আবার সিলেক্ট করা */
+    if(prevId){
+      var reSel=container.querySelector('[data-method="'+prevId+'"]');
+      if(reSel)reSel.classList.add('selected');
+    }
+  });
+}
+
+function selectPayMethod(id,el){
+  selectedPayMethod=id;
+  var cards=document.querySelectorAll('.pay-method-card');
+  for(var i=0;i<cards.length;i++)cards[i].classList.remove('selected');
+  if(el)el.classList.add('selected');
+}
+
+/* ============================================================
+   COUNTRY CODES
+   ============================================================ */
+var COUNTRY_CODES=[
+  {code:'+880',name:'Bangladesh'},{code:'+91',name:'India'},{code:'+1',name:'USA/Canada'},
+  {code:'+44',name:'UK'},{code:'+92',name:'Pakistan'},{code:'+966',name:'Saudi Arabia'},
+  {code:'+971',name:'UAE'},{code:'+855',name:'Cambodia'},{code:'+84',name:'Vietnam'},
+  {code:'+62',name:'Indonesia'},{code:'+63',name:'Philippines'},{code:'+60',name:'Malaysia'},
+  {code:'+66',name:'Thailand'},{code:'+90',name:'Turkey'},{code:'+20',name:'Egypt'},
+  {code:'+234',name:'Nigeria'},{code:'+27',name:'South Africa'},{code:'+55',name:'Brazil'},
+  {code:'+7',name:'Russia'},{code:'+49',name:'Germany'},{code:'+33',name:'France'},
+  {code:'+39',name:'Italy'},{code:'+34',name:'Spain'},{code:'+81',name:'Japan'},
+  {code:'+82',name:'South Korea'},{code:'+86',name:'China'},{code:'+61',name:'Australia'},
+  {code:'+52',name:'Mexico'},{code:'+31',name:'Netherlands'},{code:'+46',name:'Sweden'},
+  {code:'+48',name:'Poland'}
+];
+function toggleCC(){var d=document.getElementById('ccDropdown');d.classList.toggle('show');if(d.classList.contains('show')){renderCCList(COUNTRY_CODES);document.getElementById('ccSearch').value='';document.getElementById('ccSearch').focus()}}
+function filterCC(){var q=document.getElementById('ccSearch').value.toLowerCase();var f=COUNTRY_CODES.filter(function(c){return(c.code+c.name).toLowerCase().includes(q)});renderCCList(f)}
+function renderCCList(list){document.getElementById('ccList').innerHTML=list.map(function(c){return'<div class="cc-option" onclick="pickCC(\''+c.code+'\')">'+c.code+' '+c.name+'</div>'}).join('')}
+function pickCC(code){document.getElementById('ccInput').value=code;document.getElementById('ccDropdown').classList.remove('show')}
+document.addEventListener('click',function(e){if(!e.target.closest('#ccDropdown')&&!e.target.closest('[onclick*="toggleCC"]'))document.getElementById('ccDropdown').classList.remove('show')});
+
+/* ============================================================
+   PACKAGES
+   ============================================================ */
+var PACKAGES=[
+  {id:'normal',name:'Normal',emoji:'📦',visitors:100,price:0.25,duration:0,maxCountries:0,tag:null,tagClass:''},
+  {id:'standard',name:'Standard',emoji:'📈',visitors:500,price:0.50,duration:0,maxCountries:0,tag:null,tagClass:''},
+  {id:'high',name:'High',emoji:'🔥',visitors:1000,price:1.00,duration:3,maxCountries:3,tag:'POPULAR',tagClass:'pkg-tag-popular'},
+  {id:'premium',name:'Premium',emoji:'⭐',visitors:2000,price:2.00,duration:4,maxCountries:5,tag:'BEST',tagClass:'pkg-tag-best'},
+  {id:'advanced',name:'Advanced',emoji:'🚀',visitors:3500,price:3.50,duration:5,maxCountries:7,tag:null,tagClass:''},
+  {id:'ultra',name:'Ultra',emoji:'👑',visitors:7500,price:7.50,duration:6,maxCountries:12,tag:null,tagClass:''},
+  {id:'platinum',name:'Platinum',emoji:'🏆',visitors:10000,price:10.00,duration:7,maxCountries:14,tag:'MAX',tagClass:'pkg-tag-max'}
+];
+
+/* ============================================================
+   COUNTRIES
+   ============================================================ */
+var COUNTRIES=[
+  {code:'US',name:'United States',flag:'🇺🇸'},{code:'UK',name:'United Kingdom',flag:'🇬🇧'},
+  {code:'CA',name:'Canada',flag:'🇨🇦'},{code:'AU',name:'Australia',flag:'🇦🇺'},
+  {code:'DE',name:'Germany',flag:'🇩🇪'},{code:'FR',name:'France',flag:'🇫🇷'},
+  {code:'BD',name:'Bangladesh',flag:'🇧🇩'},{code:'IN',name:'India',flag:'🇮🇳'},
+  {code:'PK',name:'Pakistan',flag:'🇵🇰'},{code:'JP',name:'Japan',flag:'🇯🇵'},
+  {code:'KR',name:'South Korea',flag:'🇰🇷'},{code:'BR',name:'Brazil',flag:'🇧🇷'},
+  {code:'RU',name:'Russia',flag:'🇷🇺'},{code:'TR',name:'Turkey',flag:'🇹🇷'},
+  {code:'SA',name:'Saudi Arabia',flag:'🇸🇦'},{code:'AE',name:'UAE',flag:'🇦🇪'},
+  {code:'NG',name:'Nigeria',flag:'🇳🇬'},{code:'EG',name:'Egypt',flag:'🇪🇬'},
+  {code:'MX',name:'Mexico',flag:'🇲🇽'},{code:'ID',name:'Indonesia',flag:'🇮🇩'},
+  {code:'PH',name:'Philippines',flag:'🇵🇭'},{code:'TH',name:'Thailand',flag:'🇹🇭'},
+  {code:'VN',name:'Vietnam',flag:'🇻🇳'},{code:'MY',name:'Malaysia',flag:'🇲🇾'},
+  {code:'IT',name:'Italy',flag:'🇮🇹'},{code:'ES',name:'Spain',flag:'🇪🇸'},
+  {code:'NL',name:'Netherlands',flag:'🇳🇱'},{code:'SE',name:'Sweden',flag:'🇸🇪'},
+  {code:'PL',name:'Poland',flag:'🇵🇱'},{code:'ZA',name:'South Africa',flag:'🇿🇦'}
+];
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function showSignup(){document.getElementById('loginForm').style.display='none';document.getElementById('signupForm').style.display='block';document.getElementById('authSubtitle').textContent='Create your account'}
+function showLogin(){document.getElementById('signupForm').style.display='none';document.getElementById('loginForm').style.display='block';document.getElementById('authSubtitle').textContent='Sign in to manage your campaigns'}
+function handleLogin(e){
+  e.preventDefault();
+  var phone=document.getElementById('loginPhone').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  db.ref('users/'+phone).once('value').then(function(s){
+    var u=s.val();
+    if(!u){toast('Account not found',false);return}
+    if(u.password!==pass){toast('Wrong password',false);return}
+    currentUser=u;currentUserPhone=phone;
+    localStorage.setItem('ct_session',phone);
+    document.getElementById('authSection').style.display='none';
+    document.getElementById('mainPanel').style.display='block';
+    initDashboard();
+  });
+  return false;
+}
+function handleSignup(e){
+  e.preventDefault();
+  var name=document.getElementById('signupName').value.trim();
+  var cc=document.getElementById('ccInput').value.trim();
+  var phone=document.getElementById('signupPhone').value.trim();
+  var pass=document.getElementById('signupPass').value;
+  var confirm=document.getElementById('signupConfirm').value;
+  if(!name||!phone){toast('Fill all fields',false);return false}
+  if(pass!==confirm){toast('Passwords do not match',false);return false}
+  var fullPhone=cc+phone;
+  db.ref('users/'+fullPhone).once('value').then(function(s){
+    if(s.val()){toast('Phone already registered',false);return}
+    db.ref('users/'+fullPhone).set({username:name,phone:fullPhone,password:pass,balance:0,role:'user',createdAt:new Date().toISOString()}).then(function(){
+      toast('Account created!');
+      showLogin();
+    });
+  });
+  return false;
+}
+function handleLogout(){
+  currentUser=null;currentUserPhone=null;
+  localStorage.removeItem('ct_session');
+  document.getElementById('mainPanel').style.display='none';
+  document.getElementById('authSection').style.display='flex';
+  document.getElementById('loginPass').value='';
+}
+
+/* ============================================================
+   SIDEBAR & VIEWS
+   ============================================================ */
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('show')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show')}
+function switchView(viewId,btn){
+  document.querySelectorAll('.view-section').forEach(function(v){v.style.display='none'});
+  var el=document.getElementById('view-'+viewId);
+  if(el)el.style.display='block';
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});
+  if(btn)btn.classList.add('active');
+  var titles={dashboard:'Dashboard',deposit:'Deposit Money',newCampaign:'New Campaign',myCampaigns:'My Campaigns',workRules:'Work Rules',contact:'Contact Support',adminDash:'Admin Dashboard',adminUsers:'Manage Users',adminCampaigns:'Manage Campaigns'};
+  document.getElementById('pageTitle').textContent=titles[viewId]||viewId;
+  closeSidebar();
+  if(viewId==='deposit')loadUserPaymentMethods();
+  if(viewId==='workRules')loadWorkRules();
+  if(viewId==='myCampaigns')renderMyCampaigns();
+}
+
+/* ============================================================
+   DASHBOARD INIT
+   ============================================================ */
+function initDashboard(){
+  if(!currentUser)return;
+  document.getElementById('dashName').textContent=currentUser.username||'User';
+  document.getElementById('dashPhone').textContent=currentUserPhone||'N/A';
+  updateBalanceDisplay();
+  if(currentUser.role==='admin')document.getElementById('adminNav').style.display='block';
+  else document.getElementById('adminNav').style.display='none';
+  loadNotifications();
+  loadUserPaymentMethods();
+  loadWorkRules();
+  loadAnnouncement();
+  renderPackages();
+  renderCountries();
+  /* রিয়েল-টাইম ব্যালেন্স সিঙ্ক */
+  db.ref('users/'+currentUserPhone+'/balance').on('value',function(s){
+    if(currentUser)currentUser.balance=s.val()||0;
+    updateBalanceDisplay();
+  });
+  /* রিয়েল-টাইম ক্যাম্পেইন সিঙ্ক */
+  db.ref('campaigns').on('value',function(s){
+    updateCampaignStats(s.val()||{});
+  });
+  /* রিয়েল-টাইম ডিপোজিট হিস্ট্রি */
+  db.ref('deposits/'+currentUserPhone).on('value',function(s){
+    renderDepositHistory(s.val()||{});
+  });
+}
+function updateBalanceDisplay(){
+  var b=currentUser?Number(currentUser.balance||0):0;
+  document.getElementById('dashBalance').textContent=b.toFixed(2);
+  document.getElementById('navBalance').textContent=b.toFixed(2);
+}
+function updateCampaignStats(camps){
+  var pending=0,active=0,completed=0;
+  var keys=Object.keys(camps);
+  for(var i=0;i<keys.length;i++){
+    var c=camps[keys[i]];
+    if(c.userId!==currentUserPhone)continue;
+    if(c.status==='pending')pending++;
+    else if(c.status==='approved'||c.status==='active')active++;
+    else if(c.status==='completed')completed++;
+  }
+  document.getElementById('statPending').textContent=pending;
+  document.getElementById('statActive').textContent=active;
+  document.getElementById('statCompleted').textContent=completed;
+}
+
+/* ============================================================
+   ANNOUNCEMENT BAR রিয়েল-টাইম সিঙ্ক
+   ============================================================ */
+function loadAnnouncement(){
+  db.ref('settings/announcement').on('value',function(s){
+    var v=s.val()||{};
+    var text=(typeof v==='object'&&v.text!=null)?v.text:String(v||'');
+    var enabled=!(typeof v==='object'&&v.enabled===false);
+    var bar=document.querySelector('.scroll-bar');
+    var txt=document.getElementById('scrollText');
+    if(!bar||!txt)return;
+    if(enabled&&text){
+      bar.style.display='block';
+      txt.textContent=text;
+    }else{
+      bar.style.display='none';
+    }
+  });
+}
+
+/* ============================================================
+   WORK RULES রিয়েল-টাইম সিঙ্ক
+   ============================================================ */
+function loadWorkRules(){
+  db.ref('settings/workRules').on('value',function(s){
+    var r=s.val()||{};
+    var pkgList=document.getElementById('rulesPackageList');
+    var timeList=document.getElementById('rulesTimeList');
+    var impList=document.getElementById('rulesImportantList');
+    if(pkgList){
+      var items=r.packageItems||[];
+      pkgList.innerHTML=items.map(function(t){return'<li>'+esc(t)+'</li>'}).join('');
+    }
+    if(timeList){
+      var tItems=r.timeItems||[];
+      timeList.innerHTML=tItems.map(function(t){return'<li>'+esc(t)+'</li>'}).join('');
+    }
+    if(impList){
+      var iItems=r.importantItems||[];
+      impList.innerHTML=iItems.map(function(t){return'<li>'+esc(t)+'</li>'}).join('');
+    }
+  });
+}
+
+/* ============================================================
+   DEPOSIT
+   ============================================================ */
+function setQuickAmount(val){document.getElementById('depAmount').value=val;document.querySelectorAll('.quick-amount-btn').forEach(function(b){b.classList.remove('active')});event.target.classList.add('active')}
+function clearQuickAmount(){document.querySelectorAll('.quick-amount-btn').forEach(function(b){b.classList.remove('active')})}
+function searchAccount(q){
+  var box=document.getElementById('accountResults');
+  if(!q||q.length<1){box.classList.remove('show');box.innerHTML='';return}
+  /* ইউজারের নিজের অ্যাকাউন্ট নাম দেখানো */
+  if(currentUser){
+    var name=(currentUser.username||'').toLowerCase();
+    var phone=(currentUserPhone||'').toLowerCase();
+    if(name.includes(q.toLowerCase())||phone.includes(q.toLowerCase())){
+      box.innerHTML='<div class="account-search-item" onclick="document.getElementById(\'depAccountSearch\').value=\''+esc(currentUser.username||currentUserPhone)+'\';document.getElementById(\'accountResults\').classList.remove(\'show\')"><i class="fas fa-user" style="color:#a78bfa"></i> '+esc(currentUser.username||currentUserPhone)+' <span style="color:rgba(255,255,255,0.3);font-size:11px">'+esc(currentUserPhone)+'</span></div>';
+      box.classList.add('show');
+    }else{
+      box.innerHTML='<div style="padding:12px 18px;color:rgba(255,255,255,0.3);font-size:13px">No account found</div>';
+      box.classList.add('show');
+    }
+  }
+}
+document.addEventListener('click',function(e){if(!e.target.closest('#depAccountSearch')&&!e.target.closest('#accountResults')){var b=document.getElementById('accountResults');if(b)b.classList.remove('show')}});
+
+function submitDeposit(){
+  if(!selectedPayMethod){toast('Select a payment method',false);return}
+  var senderName=document.getElementById('depSenderName').value.trim();
+  var accountName=document.getElementById('depAccountSearch').value.trim();
+  var amount=parseFloat(document.getElementById('depAmount').value);
+  if(!senderName){toast('Enter sender account name',false);return}
+  if(!accountName){toast('Select your account',false);return}
+  if(!amount||amount<1){toast('Minimum deposit is $1',false);return}
+  var methodName='Unknown';
+  if(cachedPaymentMethods&&cachedPaymentMethods[selectedPayMethod]){
+    methodName=cachedPaymentMethods[selectedPayMethod].name||selectedPayMethod;
+  }
+  var depData={
+    method:selectedPayMethod,
+    methodName:methodName,
+    senderName:senderName,
+    accountName:accountName,
+    amount:amount,
+    status:'pending',
+    createdAt:new Date().toISOString()
+  };
+  db.ref('deposits/'+currentUserPhone).push(depData).then(function(){
+    toast('Deposit request submitted!');
+    document.getElementById('depSenderName').value='';
+    document.getElementById('depAccountSearch').value='';
+    document.getElementById('depAmount').value='';
+    clearQuickAmount();
+    selectedPayMethod=null;
+    document.querySelectorAll('.pay-method-card').forEach(function(c){c.classList.remove('selected')});
+  });
+}
+
+function renderDepositHistory(deps){
+  var tbody=document.getElementById('depHistoryTable');
+  var empty=document.getElementById('depHistoryEmpty');
+  var table=tbody?tbody.closest('table'):null;
+  var keys=Object.keys(deps);
+  if(!keys.length){
+    if(table)table.style.display='none';
+    if(empty)empty.style.display='block';
+    return;
+  }
+  if(table)table.style.display='table';
+  if(empty)empty.style.display='none';
+  var html='';
+  for(var i=keys.length-1;i>=0;i--){
+    var d=deps[keys[i]];
+    var statusHtml='';
+    if(d.status==='pending')statusHtml='<span class="dep-status-pulse"><span class="pulse-dot"></span><span class="badge badge-pending">PENDING</span></span>';
+    else if(d.status==='approved')statusHtml='<span class="badge badge-approved">APPROVED</span>';
+    else if(d.status==='rejected')statusHtml='<span class="badge badge-rejected">REJECTED</span>';
+    else statusHtml='<span class="badge badge-pending">'+esc(d.status||'pending').toUpperCase()+'</span>';
+    var methodBadgeClass='dep-method-'+esc(d.method||'default');
+    html+='<tr><td><span class="dep-method-badge '+methodBadgeClass+'">'+esc(d.methodName||d.method||'N/A')+'</span></td><td><span class="dep-trx-id">'+esc(keys[i])+'</span></td><td><span class="dep-amount">'+money(d.amount)+'</span></td><td>'+statusHtml+'</td></tr>';
+  }
+  if(tbody)tbody.innerHTML=html;
+}
+
+/* ============================================================
+   CAMPAIGNS
+   ============================================================ */
+function renderPackages(){
+  var grid=document.getElementById('pkgGrid');
+  if(!grid)return;
+  grid.innerHTML=PACKAGES.map(function(p){
+    var tagHtml=p.tag?'<div class="pkg-tag '+p.tagClass+'">'+p.tag+'</div>':'';
+    return'<div class="pkg-card" data-pkg="'+p.id+'" onclick="selectPkg(\''+p.id+'\',this)">'+
+      tagHtml+'<div class="pkg-check"><i class="fas fa-check"></i></div>'+
+      '<span class="pkg-emoji">'+p.emoji+'</span>'+
+      '<div class="pkg-name">'+p.name+'</div>'+
+      '<div class="pkg-visitors">'+Number(p.visitors).toLocaleString()+' visitors'+(p.duration?' • '+p.duration+'s':'')+'</div>'+
+      '<div class="pkg-price">$'+p.price.toFixed(2)+' <span>USD</span></div></div>';
+  }).join('');
+}
+function selectPkg(id,el){
+  selectedPkg=PACKAGES.find(function(p){return p.id===id})||null;
+  document.querySelectorAll('.pkg-card').forEach(function(c){c.classList.remove('selected')});
+  if(el)el.classList.add('selected');
+  var cs=document.getElementById('countrySection');
+  if(selectedPkg&&selectedPkg.maxCountries>0){
+    cs.style.display='block';
+    cs.classList.add('slide-down');
+    document.getElementById('countryLimitLabel').textContent='Max '+selectedPkg.maxCountries;
+    selectedCountries=[];
+    updateCountryCount();
+    document.querySelectorAll('.country-chip').forEach(function(c){c.classList.remove('selected')});
+  }else{cs.style.display='none'}
+  updateReview();
+}
+function renderCountries(){
+  var grid=document.getElementById('countryGrid');
+  if(!grid)return;
+  grid.innerHTML=COUNTRIES.map(function(c){
+    return'<div class="country-chip" data-code="'+c.code+'" onclick="toggleCountry(\''+c.code+'\',this)">'+
+      '<span class="c-flag">'+c.flag+'</span><span class="c-name">'+c.name+'</span><i class="fas fa-check c-check"></i></div>';
+  }).join('');
+}
+function toggleCountry(code,el){
+  var idx=selectedCountries.indexOf(code);
+  if(idx>-1){selectedCountries.splice(idx,1);el.classList.remove('selected')}
+  else{
+    if(selectedPkg&&selectedCountries.length>=selectedPkg.maxCountries){toast('Max '+selectedPkg.maxCountries+' countries',false);return}
+    selectedCountries.push(code);el.classList.add('selected');
+  }
+  updateCountryCount();
+  updateReview();
+}
+function updateCountryCount(){var el=document.getElementById('countryCount');if(el)el.textContent=selectedCountries.length}
+function updateReview(){
+  var sec=document.getElementById('reviewSection');
+  var box=document.getElementById('reviewContent');
+  if(!selectedPkg||!box){if(sec)sec.style.display='none';return}
+  sec.style.display='block';sec.classList.add('slide-down');
+  var bal=currentUser?Number(currentUser.balance||0):0;
+  var canAfford=bal>=selectedPkg.price;
+  var html='<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="color:rgba(255,255,255,0.4);font-size:13px">Package</span><span style="font-weight:800;color:#fff;font-size:14px">'+selectedPkg.emoji+' '+selectedPkg.name+'</span></div>'+
+  '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="color:rgba(255,255,255,0.4);font-size:13px">Visitors</span><span style="font-weight:800;color:#fff;font-size:14px">'+Number(selectedPkg.visitors).toLocaleString()+'</span></div>'+
+  '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="color:rgba(255,255,255,0.4);font-size:13px">Cost</span><span style="font-weight:900;color:'+(canAfford?'#34d399':'#f87171')+';font-size:14px">$'+selectedPkg.price.toFixed(2)+(canAfford?'':' (Insufficient)')+'</span></div>';
+  if(selectedCountries.length>0){
+    var countryNames=selectedCountries.map(function(code){var c=COUNTRIES.find(function(x){return x.code===code});return c?c.flag+' '+c.name:code}).join(', ');
+    html+='<div style="padding:10px 0"><span style="color:rgba(255,255,255,0.4);font-size:13px;display:block;margin-bottom:6px">Countries</span><span style="font-weight:600;color:#c4b5fd;font-size:13px">'+countryNames+'</span></div>';
+  }
+  box.innerHTML=html;
+}
+function submitCampaign(){
+  if(!selectedPkg){toast('Select a package',false);return}
+  var link=document.getElementById('campLink').value.trim();
+  if(!link){toast('Enter target link',false);return}
+  var bal=currentUser?Number(currentUser.balance||0):0;
+  if(bal<selectedPkg.price){toast('Insufficient balance. Deposit first.',false);return}
+  var campData={
+    userId:currentUserPhone,
+    link:link,
+    package:selectedPkg.name,
+    packageId:selectedPkg.id,
+    visitors:selectedPkg.visitors,
+    price:selectedPkg.price,
+    countries:selectedCountries,
+    status:'pending',
+    balanceCharged:true,
+    chargedAmount:selectedPkg.price,
+    createdAt:new Date().toISOString()
+  };
+  db.ref('campaigns').push(campData).then(function(ref){
+    /* ব্যালেন্স কাটা */
+    db.ref('users/'+currentUserPhone+'/balance').transaction(function(b){
+      return Number(b||0)-selectedPkg.price;
+    });
+    toast('Campaign submitted!');
+    document.getElementById('campLink').value='';
+    selectedPkg=null;selectedCountries=[];
+    document.querySelectorAll('.pkg-card').forEach(function(c){c.classList.remove('selected')});
+    document.querySelectorAll('.country-chip').forEach(function(c){c.classList.remove('selected')});
+    document.getElementById('countrySection').style.display='none';
+    document.getElementById('reviewSection').style.display='none';
+    updateCountryCount();
+  });
+}
+function renderMyCampaigns(){
+  if(!currentUserPhone)return;
+  db.ref('campaigns').once('value').then(function(s){
+    var camps=s.val()||{};
+    var tbody=document.getElementById('myCampsTable');
+    var html='';
+    var keys=Object.keys(camps);
+    var found=false;
+    for(var i=keys.length-1;i>=0;i--){
+      var c=camps[keys[i]];
+      if(c.userId!==currentUserPhone)continue;
+      found=true;
+      var statusClass='badge-pending';
+      if(c.status==='approved'||c.status==='active')statusClass='badge-active';
+      else if(c.status==='completed')statusClass='badge-completed';
+      else if(c.status==='rejected')statusClass='badge-rejected';
+      var countryStr=c.countries&&c.countries.length?c.countries.join(', '):'All';
+      var dateStr=c.createdAt?new Date(c.createdAt).toLocaleDateString():'—';
+      var shortLink=c.link.length>35?c.link.substr(0,35)+'...':c.link;
+      html+='<tr><td><a href="'+esc(c.link)+'" target="_blank" style="color:#a78bfa;text-decoration:none;font-family:monospace;font-size:12px">'+esc(shortLink)+'</a></td><td>'+esc(c.package||'—')+'</td><td style="font-size:12px;color:rgba(255,255,255,0.5)">'+esc(countryStr)+'</td><td style="font-size:12px;color:rgba(255,255,255,0.4)">'+dateStr+'</td><td><span class="badge '+statusClass+'">'+esc((c.status||'pending').toUpperCase())+'</span></td></tr>';
+    }
+    if(!found)html='<tr><td colspan="5" class="empty-state"><i class="fas fa-folder-open"></i><p>No campaigns yet</p></td></tr>';
+    if(tbody)tbody.innerHTML=html;
+  });
+}
+
+/* ============================================================
+   NOTIFICATIONS
+   ============================================================ */
+function loadNotifications(){
+  if(!currentUserPhone)return;
+  db.ref('notifications/'+currentUserPhone).on('value',function(s){
+    notificationsData=s.val()||{};
+    var list=document.getElementById('notifList');
+    var badge=document.getElementById('notifBadge');
+    var keys=Object.keys(notificationsData);
+    var unread=0;
+    var html='';
+    for(var i=keys.length-1;i>=0;i--){
+      var n=notificationsData[keys[i]];
+      if(!n.read)unread++;
+      var cls=n.read?'notif-read':'notif-unread';
+      html+='<div class="notif-item '+cls+'" data-key="'+keys[i]+'" onclick="markNotifRead(\''+keys[i]+'\')">'+
+        '<div style="font-weight:700;color:#fff;font-size:13px;margin-bottom:4px">'+esc(n.title||'')+'</div>'+
+        '<div style="font-size:12px;color:rgba(255,255,255,0.5)">'+esc(n.message||'')+'</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:6px">'+(n.timestamp?new Date(n.timestamp).toLocaleString():'')+'</div></div>';
+    }
+    if(!keys.length)html='<div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications</p></div>';
+    if(list)list.innerHTML=html;
+    if(badge){
+      if(unread>0){badge.style.display='flex';badge.textContent=unread>9?'9+':unread}
+      else badge.style.display='none';
+    }
+  });
+}
+function markNotifRead(key){
+  db.ref('notifications/'+currentUserPhone+'/'+key+'/read').set(true);
+}
+function markAllRead(){
+  var keys=Object.keys(notificationsData);
+  var updates={};
+  for(var i=0;i<keys.length;i++)updates[keys[i]+'/read']=true;
+  if(keys.length)db.ref('notifications/'+currentUserPhone).update(updates);
+}
+function openNotifModal(){document.getElementById('notifModal').classList.add('show')}
+function closeNotifModal(){document.getElementById('notifModal').classList.remove('show')}
+
+/* ============================================================
+   ADMIN INLINE FUNCTIONS
+   ============================================================ */
+function closeEditModal(){document.getElementById('editModal').classList.remove('show')}
+function saveEditUser(){
+  var phone=document.getElementById('editPhone').value;
+  var name=document.getElementById('editUsername').value.trim();
+  var balance=parseFloat(document.getElementById('editBalance').value)||0;
+  var role=document.getElementById('editRole').value;
+  if(!phone||!name){toast('Fill required fields',false);return}
+  db.ref('users/'+phone).update({username:name,balance:balance,role:role,updatedAt:new Date().toISOString()});
+  closeEditModal();toast('User updated');
+}
+
+/* ============================================================
+   AUTO-LOGIN CHECK
+   ============================================================ */
+window.addEventListener('DOMContentLoaded',function(){
+  var savedPhone=localStorage.getItem('ct_session');
+  if(savedPhone){
+    db.ref('users/'+savedPhone).once('value').then(function(s){
+      var u=s.val();
+      if(u){
+        currentUser=u;currentUserPhone=savedPhone;
+        document.getElementById('authSection').style.display='none';
+        document.getElementById('mainPanel').style.display='block';
+        initDashboard();
+      }else{
+        localStorage.removeItem('ct_session');
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
